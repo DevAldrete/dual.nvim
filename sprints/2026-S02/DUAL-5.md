@@ -1,16 +1,17 @@
 ---
 id: DUAL-5
 title: "The review window"
-status: todo
+status: doing
 type: story
 epic: EPIC-01
 sprint: 2026-S02
 points: 8
 priority: 1
 labels: [ui]
-order: 20
+order: 10
 created: 2026-10-21
 updated: 2026-10-21
+assignee: agent-opencode
 ---
 
 ## Context
