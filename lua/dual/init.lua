@@ -98,6 +98,16 @@ function M.setup_commands(cfg)
       require("dual.ui.review").open(paths[1])
     end, { desc = "Review what the agent changed" })
   end
+  if commands.model ~= nil then
+    vim.api.nvim_create_user_command(commands.model, function()
+      require("dual.ops.model").run()
+    end, { desc = "Pick the model" })
+  end
+  if commands.sessions ~= nil then
+    vim.api.nvim_create_user_command(commands.sessions, function()
+      require("dual.ops.sessions").run()
+    end, { desc = "Pick a session" })
+  end
   if commands.health ~= nil then
     vim.api.nvim_create_user_command(commands.health, function()
       require("dual.health").report()

@@ -93,8 +93,34 @@ while true do
           ok = true,
           models = {
             { provider = "mock", model = "m", context_window = 8000, active = true },
+            { provider = "mock", model = "m2", context_window = 4000, active = false },
           },
         })
+      elseif cmd == "model" then
+        write({ id = req.id, ok = true, model = req.model or "mock/m" })
+      elseif cmd == "sessions" then
+        write({
+          id = req.id,
+          ok = true,
+          sessions = {
+            {
+              id = "mock-session-1",
+              title = "the first one",
+              model = "mock/m",
+              updated_at = 1792556239,
+              messages = 4,
+            },
+            {
+              id = "mock-session-2",
+              title = "the second one",
+              model = "mock/m",
+              updated_at = 1792556000,
+              messages = 2,
+            },
+          },
+        })
+      elseif cmd == "resume" then
+        write({ id = req.id, ok = true })
       elseif cmd == "sync" then
         write({ id = req.id, ok = true })
       else
