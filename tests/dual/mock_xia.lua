@@ -73,6 +73,18 @@ while true do
             is_new = false,
           })
         end
+        -- A turn that searches fills the quickfix list.
+        if req.text:match("^search") then
+          write({ event = "tool_call", name = "grep", input = '{"pattern":"x"}' })
+          write({
+            event = "tool_result",
+            name = "grep",
+            input = '{"pattern":"x"}',
+            output = "lua/dual/init.lua:12:  local x = 1;\n"
+              .. "lua/dual/session.lua:4:  local y = 2;\n2 match(es)\n",
+            is_error = false,
+          })
+        end
         write({ event = "text", text = answer })
         write({ event = "message", text = answer })
         write({ event = "run_end", ok = true })
