@@ -1,7 +1,7 @@
 ---
 id: DUAL-2
 title: "The chat split"
-status: doing
+status: review
 type: story
 epic: EPIC-01
 sprint: 2026-S01
