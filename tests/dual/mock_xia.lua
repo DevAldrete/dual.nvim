@@ -61,6 +61,16 @@ while true do
         write({ id = req.id, ok = true })
         write({ event = "run_start" })
         write({ event = "line", role = "user", style = "plain", text = req.text })
+        -- A turn that asks for a change changes a file.
+        local changed = req.text:match("^change%s+(%S+)")
+        if changed ~= nil then
+          write({
+            event = "file_changed",
+            path = changed,
+            text = "int main(void) {\n  return 1;\n}\n",
+            is_new = false,
+          })
+        end
         write({ event = "text", text = answer })
         write({ event = "message", text = answer })
         write({ event = "run_end", ok = true })
