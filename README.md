@@ -9,8 +9,8 @@ many models, and a Neovim that stays yours.
 
 ```lua
 {
-  "your-name/dual.nvim",
-  dependencies = { "your-name/xia" },
+  "DevAldrete/dual.nvim",
+  dependencies = { "DevAldrete/xia" },
   config = function()
     require("dual").setup()
   end,
