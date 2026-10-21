@@ -1,7 +1,7 @@
 ---
 id: DUAL-4
 title: "The diff engine and the review state"
-status: doing
+status: review
 type: story
 epic: EPIC-01
 sprint: 2026-S02
