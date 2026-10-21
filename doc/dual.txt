@@ -118,7 +118,7 @@ They are changed with `keys`; see |dual-configuration|.
         sync = "loaded",
         max_size = 512 * 1024,
       },
-      allow_shell = false,
+      allow_shell = "auto",
       keys = { ... },
       commands = { ... },
       mentions = {
@@ -144,8 +144,8 @@ files.sync              Which buffers the agent is given: "loaded",
                         "modified" or "current".
 files.max_size          A file bigger than this is not sent.
 
-allow_shell             Whether the agent may use the shell. See
-                        |dual-shell|.
+allow_shell             Whether the agent may use the shell: "auto",
+                        true or false. See |dual-shell|.
 
 mentions.files          Whether @file mentions are completed.
 mentions.rules          Whether #rule mentions are completed.
@@ -197,10 +197,17 @@ A search the agent runs fills the quickfix list. `:copen` walks it.
 9. THE SHELL                                               *dual-shell*
 
 The agent's shell runs on the disk, while its file tools work on the
-buffers. A shell that writes to the disk changes files the user never
-accepted, so it is hidden from the model by default.
+buffers — so the server fences the shell in: the project is read-only
+for it, and the files you have open are safe. The shell can still read
+everything, and it can write outside the project, so a build directory
+in the temporary directory works.
 
-`allow_shell = true` gives it back. The chat says so when it is on.
+Whether the shell is offered follows the server: it is offered when the
+platform can fence it in, and kept away when it cannot.
+
+    allow_shell = "auto"    the default: the server decides
+    allow_shell = true      the shell is offered, whatever the platform
+    allow_shell = false     the shell stays away from the model
 
 ==============================================================================
 10. THE HEALTH                                            *dual-health*

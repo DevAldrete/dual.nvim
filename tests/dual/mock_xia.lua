@@ -19,7 +19,11 @@ local capabilities = {
   "models",
   "model",
   "sessions",
+  "auth",
 }
+
+-- What the shell is fenced with: the mock fences it in.
+local sandbox = "seatbelt"
 
 -- The arguments: the answer the mock gives, and the capabilities it
 -- claims.
@@ -42,6 +46,7 @@ write({
   model = "mock/m",
   session = "mock-session",
   capabilities = capabilities,
+  sandbox = sandbox,
 })
 
 while true do
