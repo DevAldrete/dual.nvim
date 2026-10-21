@@ -1,16 +1,17 @@
 ---
 id: DUAL-6
 title: "The scoped requests: change and insert"
-status: todo
+status: doing
 type: story
 epic: EPIC-01
 sprint: 2026-S02
 points: 8
 priority: 2
 labels: [ui, core]
-order: 30
+order: 10
 created: 2026-10-21
 updated: 2026-10-21
+assignee: agent-opencode
 ---
 
 ## Context
