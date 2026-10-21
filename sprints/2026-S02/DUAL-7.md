@@ -1,16 +1,17 @@
 ---
 id: DUAL-7
 title: "The model picker and the sessions picker"
-status: todo
+status: doing
 type: story
 epic: EPIC-01
 sprint: 2026-S02
 points: 5
 priority: 2
 labels: [ui]
-order: 40
+order: 10
 created: 2026-10-21
 updated: 2026-10-21
+assignee: agent-opencode
 ---
 
 ## Context
