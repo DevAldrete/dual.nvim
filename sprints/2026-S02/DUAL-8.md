@@ -1,16 +1,17 @@
 ---
 id: DUAL-8
 title: "The mentions and the quickfix"
-status: todo
+status: doing
 type: story
 epic: EPIC-01
 sprint: 2026-S02
 points: 8
 priority: 3
 labels: [ui]
-order: 50
+order: 10
 created: 2026-10-21
 updated: 2026-10-21
+assignee: agent-opencode
 ---
 
 ## Context
