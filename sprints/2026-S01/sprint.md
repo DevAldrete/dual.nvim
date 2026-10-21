@@ -1,7 +1,7 @@
 ---
 id: 2026-S01
 name: "Sprint 01"
-state: active
+state: closed
 goal: "A chat that talks to xia, and a quick ask about the code under the cursor."
 start: 2026-10-20
 end: 2026-11-03
