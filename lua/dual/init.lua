@@ -47,25 +47,28 @@ end
 --- The keymaps of the plugin. An empty key means no keymap.
 function M.setup_keymaps(cfg)
   local keys = cfg.keys or {}
+  -- A surface that is not built yet says so, rather than throwing.
+  local function action(module, name)
+    return function()
+      local ok, m = pcall(require, module)
+      if not ok or type(m) ~= "table" or type(m[name]) ~= "function" then
+        M.notify(("dual: %s is not here yet"):format(module),
+          vim.log.levels.WARN)
+        return
+      end
+      m[name]()
+    end
+  end
+
   local actions = {
-    chat = function()
-      require("dual.ui.chat").toggle()
-    end,
-    ask = function()
-      require("dual.ops.ask").run()
-    end,
-    change = function()
-      require("dual.ops.change").run()
-    end,
-    insert = function()
-      require("dual.ops.insert").run()
-    end,
+    chat = action("dual.ui.chat", "toggle"),
+    ask = action("dual.ops.ask", "run"),
+    change = action("dual.ops.change", "run"),
+    insert = action("dual.ops.insert", "run"),
     cancel = function()
-      require("dual").cancel()
+      M.cancel()
     end,
-    steer = function()
-      require("dual.ops.steer").run()
-    end,
+    steer = action("dual.ops.steer", "run"),
   }
   for name, fn in pairs(actions) do
     local key = keys[name]

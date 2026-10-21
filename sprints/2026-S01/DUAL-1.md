@@ -1,7 +1,7 @@
 ---
 id: DUAL-1
 title: "The repo and the wire"
-status: doing
+status: review
 type: story
 epic: EPIC-01
 sprint: 2026-S01
