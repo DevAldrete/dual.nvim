@@ -1,16 +1,17 @@
 ---
 id: DUAL-3
 title: "The quick ask"
-status: todo
+status: doing
 type: story
 epic: EPIC-01
 sprint: 2026-S01
 points: 13
 priority: 1
 labels: [ui]
-order: 30
+order: 10
 created: 2026-10-21
 updated: 2026-10-21
+assignee: agent-opencode
 ---
 
 ## Context
