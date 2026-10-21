@@ -1,14 +1,14 @@
 ---
 id: DUAL-2
 title: "The chat split"
-status: review
+status: done
 type: story
 epic: EPIC-01
 sprint: 2026-S01
 points: 13
 priority: 1
 labels: [ui]
-order: 10
+order: 20
 created: 2026-10-21
 updated: 2026-10-21
 assignee: agent-opencode
@@ -50,3 +50,10 @@ that matter:
 
 The chat is the only surface in this milestone that is *about* the
 conversation. The quick ask is about the code.
+
+## Delivery
+
+- Branch: `task/DUAL-2-chat`
+- Commits: `b2e59ee`, `55aa6ce`, `172a74f`, `97e1238`
+- Summary: Merged in 861f8fc.
+- Checks: make test
