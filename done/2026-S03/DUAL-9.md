@@ -1,14 +1,14 @@
 ---
 id: DUAL-9
 title: "The shell comes back, fenced in"
-status: review
+status: done
 type: story
 epic: EPIC-01
 sprint: 2026-S03
 points: 5
 priority: 1
 labels: [core]
-order: 10
+order: 90
 created: 2026-10-21
 updated: 2026-10-21
 assignee: agent-opencode
@@ -54,3 +54,10 @@ or "none".
 The shell still *reads* the disk, so `cat` and `read_file` can disagree
 about a file the user has open. What the sandbox settles is the writing:
 the shell cannot change a file the user never accepted.
+
+## Delivery
+
+- Branch: `task/DUAL-9-shell`
+- Commits: `5f9e48a`, `f2717ac`, `7d7c331`, `e9104bf`
+- Summary: Merged in a61722d.
+- Checks: make test
