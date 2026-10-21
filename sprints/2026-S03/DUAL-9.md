@@ -1,7 +1,7 @@
 ---
 id: DUAL-9
 title: "The shell comes back, fenced in"
-status: doing
+status: review
 type: story
 epic: EPIC-01
 sprint: 2026-S03
