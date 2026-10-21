@@ -153,6 +153,12 @@ function M.setup_input()  local buf = M.buffers.input
     M.clear_input()
   end, { buffer = buf, desc = "dual: clear" })
 
+  -- A mention: `@` completes the files of the project, and the agent
+  -- reads them itself.
+  vim.keymap.set("i", "@", function()
+    M.complete_mention()
+  end, { buffer = buf, desc = "dual: mention a file" })
+
   -- An approval, when one is waiting.
   vim.keymap.set("n", "y", function()
     local session = require("dual").state.session
@@ -231,6 +237,26 @@ function M.focus_input()
   if M.windows.input ~= nil and vim.api.nvim_win_is_valid(M.windows.input) then
     vim.api.nvim_set_current_win(M.windows.input)
   end
+end
+
+--- Completes a mention: the files of the project.
+function M.complete_mention()
+  local line = vim.api.nvim_get_current_line()
+  local col = vim.api.nvim_win_get_cursor(0)[2]
+  local before = line:sub(1, col)
+  local word = before:match("@([%w%._/%-]*)$")
+  if word == nil then
+    -- A plain `@`: it is just a character.
+    vim.api.nvim_put({ "@" }, "c", false, true)
+    return
+  end
+  local items = require("dual.files").complete(word)
+  if #items == 0 then
+    vim.api.nvim_put({ "@" }, "c", false, true)
+    return
+  end
+  -- The completion starts where the word does, and the `@` stays.
+  vim.fn.complete(col - #word + 1, items)
 end
 
 --- Sends what the input holds.

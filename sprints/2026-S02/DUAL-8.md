@@ -1,7 +1,7 @@
 ---
 id: DUAL-8
 title: "The mentions and the quickfix"
-status: doing
+status: review
 type: story
 epic: EPIC-01
 sprint: 2026-S02

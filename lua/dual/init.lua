@@ -45,6 +45,7 @@ end
 function M.announce(session)
   M.state.session = session
   require("dual.buffers").listen(session.client)
+  require("dual.quickfix").listen(session.client)
   session.client:on("run_end", function()
     -- The scope was for that turn only.
     M.state.scope = nil
@@ -197,8 +198,10 @@ end
 
 --- Runs a turn.
 function M.send(text, on_ready)
+  -- A mention is a path: the agent reads it itself.
+  local expanded = require("dual.files").expand(text)
   M.start(function(session)
-    session:send(text)
+    session:send(expanded)
     if on_ready then
       on_ready(session)
     end
