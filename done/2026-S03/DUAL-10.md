@@ -1,16 +1,17 @@
 ---
 id: DUAL-10
 title: "The keys are set from the editor"
-status: todo
+status: done
 type: story
 epic: EPIC-01
 sprint: 2026-S03
 points: 8
 priority: 2
 labels: [ui, core]
-order: 20
+order: 100
 created: 2026-10-21
 updated: 2026-10-21
+assignee: agent-opencode
 ---
 
 ## Context
@@ -52,3 +53,10 @@ environment: it is typed into a masked prompt and sent in the protocol
 message the client already has a channel for. The server writes it to
 its keyring, with `0600`, in the configuration directory — and that is
 where the user can look at it, and delete it.
+
+## Delivery
+
+- Branch: `task/DUAL-10-keys`
+- Commits: `aa0e222`, `eb26e0f`, `6507a80`, `e0136b2`
+- Summary: Merged in 79f65e8.
+- Checks: make test

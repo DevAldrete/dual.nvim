@@ -47,9 +47,13 @@ M.defaults = {
   },
 
   -- The shell. The agent's shell runs on the disk, while the file tools
-  -- work on the buffers, so it is hidden by default. Turning it on means
-  -- the agent can change files the user never accepted.
-  allow_shell = false,
+  -- work on the buffers, so the server fences it in: the project is
+  -- read-only for the shell, and the files the user has open are safe.
+  --
+  -- "auto" (the default) offers the shell when the platform can fence
+  -- it in, and keeps it away when it cannot; true offers it anyway;
+  -- false keeps it away whatever the platform can do.
+  allow_shell = "auto",
 
   -- The keymaps. Empty means: no keymap.
   keys = {
@@ -72,6 +76,7 @@ M.defaults = {
     review = "DualReview",
     model = "DualModel",
     sessions = "DualSessions",
+    auth = "DualAuth",
     health = "DualHealth",
   },
 

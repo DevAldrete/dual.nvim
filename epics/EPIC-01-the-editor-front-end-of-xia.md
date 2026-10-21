@@ -54,3 +54,10 @@ What the user has now: a chat, a quick ask about the code under the
 cursor, a diff they accept hunk by hunk, a model picker that knows
 nothing about any provider, and a quickfix list built from what the
 agent actually found.
+
+**Sprint 03 (see DUAL-9 and DUAL-10):** the shell comes back, fenced in
+— the server makes the project read-only for it when a host owns the
+files, and the plugin asks the server what the shell is fenced with
+rather than knowing. And the keys the user chooses can be set from the
+editor: `:DualAuth` takes the key in a prompt that hides it, and the
+server remembers it in its keyring.

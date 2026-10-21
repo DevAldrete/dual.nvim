@@ -52,7 +52,22 @@ function M.check()
     ("version %s"):format(client.version),
     ("model %s"):format(client.model),
     ("session %s"):format(client.session),
+    ("the shell is fenced with %s"):format(client.sandbox),
   })
+
+  -- The shell: offered when the platform can fence it in, and away when
+  -- it cannot.
+  local allow = cfg.allow_shell
+  if allow == true or (allow ~= false and client.sandbox ~= "none") then
+    health.ok("the shell is offered", {
+      "the project is read-only for it",
+    })
+  else
+    health.info("the shell is away from the model", {
+      allow == false and "the user asked for no shell"
+        or "this platform cannot fence the shell in",
+    })
+  end
 
   local missing = {}
   for _, command in ipairs({ "send", "steer", "answer", "sync", "cancel" }) do

@@ -12,7 +12,8 @@ CONTENTS                                            *dual-contents*
     7. The review ............................. |dual-review|
     8. The mentions ........................... |dual-mentions|
     9. The shell .............................. |dual-shell|
-   10. The health ............................. |dual-health|
+   10. The keys ............................... |dual-keys|
+   11. The health ............................. |dual-health|
 
 ==============================================================================
 1. INTRODUCTION                                     *dual-introduction*
@@ -72,6 +73,11 @@ The commands and the keymaps exist after |setup()|.
                                                          *:DualSessions*
 :DualSessions        Picks a session to go back to.
 
+                                                            *:DualAuth*
+:DualAuth            Sets the key of a provider. The providers the server
+                    knows are offered; the key is asked for in a prompt
+                    that hides it, and the server remembers it.
+
                                                             *:DualCancel*
 :DualCancel         Stops the turn that is running.
 
@@ -118,7 +124,7 @@ They are changed with `keys`; see |dual-configuration|.
         sync = "loaded",
         max_size = 512 * 1024,
       },
-      allow_shell = false,
+      allow_shell = "auto",
       keys = { ... },
       commands = { ... },
       mentions = {
@@ -144,8 +150,8 @@ files.sync              Which buffers the agent is given: "loaded",
                         "modified" or "current".
 files.max_size          A file bigger than this is not sent.
 
-allow_shell             Whether the agent may use the shell. See
-                        |dual-shell|.
+allow_shell             Whether the agent may use the shell: "auto",
+                        true or false. See |dual-shell|.
 
 mentions.files          Whether @file mentions are completed.
 mentions.rules          Whether #rule mentions are completed.
@@ -197,13 +203,36 @@ A search the agent runs fills the quickfix list. `:copen` walks it.
 9. THE SHELL                                               *dual-shell*
 
 The agent's shell runs on the disk, while its file tools work on the
-buffers. A shell that writes to the disk changes files the user never
-accepted, so it is hidden from the model by default.
+buffers — so the server fences the shell in: the project is read-only
+for it, and the files you have open are safe. The shell can still read
+everything, and it can write outside the project, so a build directory
+in the temporary directory works.
 
-`allow_shell = true` gives it back. The chat says so when it is on.
+Whether the shell is offered follows the server: it is offered when the
+platform can fence it in, and kept away when it cannot.
+
+    allow_shell = "auto"    the default: the server decides
+    allow_shell = true      the shell is offered, whatever the platform
+    allow_shell = false     the shell stays away from the model
 
 ==============================================================================
-10. THE HEALTH                                            *dual-health*
+10. THE KEYS                                              *dual-keys*
+
+The provider is a choice, and the key belongs to that choice. `:DualAuth`
+asks the server which providers there are — and which of them have a key —
+and the key is asked for in a prompt that hides it: a key is not
+something to read over your shoulder.
+
+The server remembers it in its keyring: `$XDG_CONFIG_HOME/xia/auth.json`,
+or `~/.config/xia/auth.json`, a plain JSON file with `0600` in a
+directory with `0700`. That is where the user can look at it, and delete
+it — with `xia auth remove <provider>`, or by leaving the prompt empty.
+
+The key never goes near the transcript, the command line or the
+environment.
+
+==============================================================================
+11. THE HEALTH                                            *dual-health*
 
 >vim
     :checkhealth dual
