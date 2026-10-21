@@ -1,7 +1,7 @@
 ---
 id: DUAL-9
 title: "The shell comes back, fenced in"
-status: todo
+status: doing
 type: story
 epic: EPIC-01
 sprint: 2026-S03
@@ -11,6 +11,7 @@ labels: [core]
 order: 10
 created: 2026-10-21
 updated: 2026-10-21
+assignee: agent-opencode
 ---
 
 ## Context
