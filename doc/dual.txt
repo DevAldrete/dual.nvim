@@ -1,0 +1,171 @@
+*dual.txt*   The Neovim front-end of xia
+
+==============================================================================
+CONTENTS                                            *dual-contents*
+
+    1. Introduction ........................... |dual-introduction|
+    2. Setup .................................. |dual-setup|
+    3. The commands ........................... |dual-commands|
+    4. The keymaps ............................ |dual-keymaps|
+    5. The configuration ...................... |dual-configuration|
+    6. The files .............................. |dual-files|
+    7. The shell .............................. |dual-shell|
+    8. The health ............................. |dual-health|
+
+==============================================================================
+1. INTRODUCTION                                     *dual-introduction*
+
+`xia` is the agent: the providers, the tools, the session. `dual.nvim` is
+the editor: the chat, the quick ask, the buffers, the diffs.
+
+The plugin talks to `xia --serve` over JSON lines, so it works with every
+model xia has configured and knows nothing about which provider serves it.
+
+==============================================================================
+2. SETUP                                                   *dual-setup*
+
+The plugin needs the `xia` binary on the path. >
+
+    require("dual").setup()
+<
+With lazy.nvim: >
+
+    {
+      "your-name/dual.nvim",
+      config = function()
+        require("dual").setup()
+      end,
+    }
+<
+The commands and the keymaps exist after |setup()|.
+
+==============================================================================
+3. THE COMMANDS                                         *dual-commands*
+
+                                                             *:DualChat*
+:DualChat            Opens the chat, or closes it. The chat is a split on
+                    the right: the conversation above, the input below.
+
+                                                             *:DualAsk*
+:DualAsk             Asks about the visual selection. The answer appears
+                    below the selection, in the code, and in the chat. The
+                    selection is not changed.
+
+                                                            *:DualChange*
+:DualChange         Asks for a change to the visual selection. The change
+                    is a proposal: it is shown as a diff and kept or thrown
+                    away.
+
+                                                            *:DualInsert*
+:DualInsert         Asks for code at the cursor.
+
+                                                            *:DualCancel*
+:DualCancel         Stops the turn that is running.
+
+                                                            *:DualSteer*
+:DualSteer          Guides the turn that is running. The guidance waits for
+                    a boundary -- after a tool, or at the end of the answer
+                    -- and the turn carries on.
+
+                                                          *:DualHealth*
+:DualHealth         Says whether the agent is there.
+
+==============================================================================
+4. THE KEYMAPS                                           *dual-keymaps*
+
+By default: >
+
+    <leader>dc   the chat
+    <leader>da   ask about the selection
+    <leader>de   change the selection
+    <leader>di   insert at the cursor
+    <leader>dx   cancel the turn
+    <leader>ds   steer the turn
+<
+They are changed with `keys`; see |dual-configuration|.
+
+==============================================================================
+5. THE CONFIGURATION                                 *dual-configuration*
+
+>lua
+    require("dual").setup({
+      server = {
+        cmd = "xia",
+        args = { "--serve" },
+        model = "",
+        cwd = "",
+        env = nil,
+      },
+      chat = {
+        width = 0.42,
+        input_lines = 3,
+        position = "botright",
+      },
+      files = {
+        sync = "loaded",
+        max_size = 512 * 1024,
+      },
+      allow_shell = false,
+      keys = { ... },
+      commands = { ... },
+      mentions = {
+        files = true,
+        rules = false,
+      },
+      handshake_timeout = 10000,
+    })
+<
+server.cmd              The xia binary.
+server.args             The arguments it is started with.
+server.model            The model, as "provider/id". Empty means whatever
+                        xia is configured with.
+server.cwd              Where the server runs. Empty means the directory
+                        Neovim was started in.
+server.env              Extra environment for the server.
+
+chat.width              How wide the chat is, as a fraction of the columns.
+chat.input_lines        How tall the input is.
+chat.position           Which side the chat opens on.
+
+files.sync              Which buffers the agent is given: "loaded",
+                        "modified" or "current".
+files.max_size          A file bigger than this is not sent.
+
+allow_shell             Whether the agent may use the shell. See
+                        |dual-shell|.
+
+mentions.files          Whether @file mentions are completed.
+mentions.rules          Whether #rule mentions are completed.
+
+==============================================================================
+6. THE FILES                                               *dual-files*
+
+The plugin owns the buffers it is given: the agent reads what the user
+sees, unsaved changes and all, and what it writes comes back to the
+buffer rather than to the disk.
+
+A file the agent changes is shown as a diff, and it is kept only when the
+user says so.
+
+==============================================================================
+7. THE SHELL                                               *dual-shell*
+
+The agent's shell runs on the disk, while its file tools work on the
+buffers. A shell that writes to the disk changes files the user never
+accepted, so it is hidden from the model by default.
+
+`allow_shell = true` gives it back. The chat says so when it is on.
+
+==============================================================================
+8. THE HEALTH                                             *dual-health*
+
+>vim
+    :checkhealth dual
+<
+It says whether the binary is there, whether the server answers, what it
+said, and which of the commands the plugin needs it understands.
+
+An older server is not a failure: the plugin asks for what the server
+says it has, and does the rest without it.
+
+vim:tw=80:ts=8:noet:ft=help:norl:
