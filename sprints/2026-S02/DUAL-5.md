@@ -1,7 +1,7 @@
 ---
 id: DUAL-5
 title: "The review window"
-status: doing
+status: review
 type: story
 epic: EPIC-01
 sprint: 2026-S02

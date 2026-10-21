@@ -21,6 +21,9 @@ M.state = {
   transport = nil,
   files = {},
   starting = false,
+  -- The scope of the turn that is running: the range the user pointed
+  -- at, if the request was a scoped one.
+  scope = nil,
 }
 
 -- The hooks: the surfaces that want to know when the session is there.
@@ -70,6 +73,16 @@ function M.setup_commands(cfg)
     vim.api.nvim_create_user_command(commands.ask, function()
       require("dual.ops.ask").run()
     end, { desc = "Ask about the selection" })
+  end
+  if commands.review ~= nil then
+    vim.api.nvim_create_user_command(commands.review, function()
+      local paths = require("dual.review").paths()
+      if #paths == 0 then
+        M.notify("dual: there is nothing to review")
+        return
+      end
+      require("dual.ui.review").open(paths[1])
+    end, { desc = "Review what the agent changed" })
   end
   if commands.health ~= nil then
     vim.api.nvim_create_user_command(commands.health, function()

@@ -88,10 +88,22 @@ end
 --- Listens to the client: a change the agent made waits for the user.
 function M.listen(client)
   client:on("file_changed", function(ev)
-    M.on_change(ev.path, ev.text or "")
     local dual = require("dual")
-    dual.notify(("dual: the agent changed %s; it waits for you"):format(
-      ev.path or "a file"))
+    local review = require("dual.review")
+    local window = require("dual.ui.review")
+
+    -- The change is under review: the user decides about it, hunk by
+    -- hunk. The scope of the turn that asked for it narrows the review.
+    review.record(ev.path, ev.text or "", {
+      is_new = ev.is_new or false,
+      scope = dual.state.scope,
+    })
+
+    local chat = require("dual.ui.chat")
+    chat.append("system", "accent", ("the agent changed %s"):format(ev.path))
+    chat.append("system", "dim", "  a accepts it, r refuses it, q closes")
+
+    window.open(ev.path)
   end)
 end
 

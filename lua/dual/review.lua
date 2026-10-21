@@ -125,19 +125,45 @@ function M.hunks(change)
   return diff.hunks(diff.text(change.base), diff.text(change.target))
 end
 
+--- The hunks of a change, each with whether it is in question.
+--
+-- A hunk is in question when it touches the scope of the request. The
+-- ones that do not are the agent's overrun: they are shown apart, and
+-- they wait for the user to say so.
+function M.entries(change)
+  local hunks = M.hunks(change)
+  local from, to = nil, nil
+  if change ~= nil and change.scope ~= nil and change.scope.path == change.path then
+    local scope = require("dual.scope")
+    from, to = scope.lines(change.scope)
+  end
+  local out = {}
+  for index, hunk in ipairs(hunks) do
+    out[#out + 1] = {
+      index = index,
+      hunk = hunk,
+      in_scope = from == nil or diff.touches(hunk, from, to),
+    }
+  end
+  return out
+end
+
 --- The hunks that are in question, and the ones that are not.
 --
 -- The scope of the request is the range the user pointed at. The hunks
 -- that touch it are the ones the request is about; the others are
 -- listed apart, and they wait.
 function M.split(change)
-  local hunks = M.hunks(change)
-  if change.scope == nil or change.scope.path ~= change.path then
-    return hunks, {}
+  local inside = {}
+  local outside = {}
+  for _, entry in ipairs(M.entries(change)) do
+    if entry.in_scope then
+      inside[#inside + 1] = entry.hunk
+    else
+      outside[#outside + 1] = entry.hunk
+    end
   end
-  local scope = require("dual.scope")
-  local from, to = scope.lines(change.scope)
-  return diff.split(hunks, from, to)
+  return inside, outside
 end
 
 --- Writes a hunk's new lines into the buffer, as an undoable edit.
