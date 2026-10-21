@@ -1,7 +1,7 @@
 ---
 id: DUAL-4
 title: "The diff engine and the review state"
-status: todo
+status: doing
 type: story
 epic: EPIC-01
 sprint: 2026-S02
@@ -11,6 +11,7 @@ labels: [core]
 order: 10
 created: 2026-10-21
 updated: 2026-10-21
+assignee: agent-opencode
 ---
 
 ## Context
