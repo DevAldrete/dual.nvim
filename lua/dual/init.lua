@@ -41,6 +41,7 @@ end
 --- Tells the surfaces the session is there.
 function M.announce(session)
   M.state.session = session
+  require("dual.buffers").listen(session.client)
   for _, fn in ipairs(M.hooks.session) do
     pcall(fn, session)
   end
@@ -64,6 +65,11 @@ function M.setup_commands(cfg)
     vim.api.nvim_create_user_command(commands.chat, function()
       require("dual.ui.chat").toggle()
     end, { desc = "The chat" })
+  end
+  if commands.ask ~= nil then
+    vim.api.nvim_create_user_command(commands.ask, function()
+      require("dual.ops.ask").run()
+    end, { desc = "Ask about the selection" })
   end
   if commands.health ~= nil then
     vim.api.nvim_create_user_command(commands.health, function()
@@ -103,6 +109,12 @@ function M.setup_keymaps(cfg)
     if key ~= nil and key ~= "" then
       vim.keymap.set("n", key, fn, { desc = "dual: " .. name })
     end
+  end
+
+  -- The ask also works on a selection that is being made: the scope is
+  -- the selection, not the last one.
+  if keys.ask ~= nil and keys.ask ~= "" then
+    vim.keymap.set("v", keys.ask, actions.ask, { desc = "dual: ask" })
   end
 end
 
