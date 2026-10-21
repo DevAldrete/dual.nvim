@@ -23,6 +23,29 @@ M.state = {
   starting = false,
 }
 
+-- The hooks: the surfaces that want to know when the session is there.
+M.hooks = {
+  session = {},
+}
+
+--- Runs a function when the session is ready. If it already is, the
+--- function runs at once.
+function M.on_session(fn)
+  if M.state.session ~= nil then
+    fn(M.state.session)
+    return
+  end
+  table.insert(M.hooks.session, fn)
+end
+
+--- Tells the surfaces the session is there.
+function M.announce(session)
+  M.state.session = session
+  for _, fn in ipairs(M.hooks.session) do
+    pcall(fn, session)
+  end
+end
+
 --- Sets the plugin up.
 -- @param opts table: the configuration; see dual.config
 function M.setup(opts)
@@ -37,6 +60,11 @@ end
 --- The commands of the plugin.
 function M.setup_commands(cfg)
   local commands = cfg.commands or {}
+  if commands.chat ~= nil then
+    vim.api.nvim_create_user_command(commands.chat, function()
+      require("dual.ui.chat").toggle()
+    end, { desc = "The chat" })
+  end
   if commands.health ~= nil then
     vim.api.nvim_create_user_command(commands.health, function()
       require("dual.health").report()
@@ -107,9 +135,9 @@ function M.start(on_ready)
 
   client:start(function(c)
     st.starting = false
-    st.session = M.session.new(c)
+    M.announce(M.session.new(c))
     if on_ready then
-      on_ready(st.session)
+      on_ready(M.state.session)
     end
   end, function(err)
     st.starting = false
