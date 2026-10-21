@@ -1,16 +1,17 @@
 ---
 id: DUAL-5
 title: "The review window"
-status: todo
+status: done
 type: story
 epic: EPIC-01
 sprint: 2026-S02
 points: 8
 priority: 1
 labels: [ui]
-order: 20
+order: 50
 created: 2026-10-21
 updated: 2026-10-21
+assignee: agent-opencode
 ---
 
 ## Context
@@ -55,3 +56,10 @@ The rules the reference plugins agree on:
 The window is a floating one: the review is a moment, and it should not
 disturb the layout the user has. The full diff is a split, because a
 comparison of two versions wants the room.
+
+## Delivery
+
+- Branch: `task/DUAL-5-review-window`
+- Commits: `4cc4b1f`, `f1d306c`, `47a67cf`, `e1c1327`
+- Summary: Merged in 07b6718.
+- Checks: make test

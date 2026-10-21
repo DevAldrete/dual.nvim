@@ -9,8 +9,10 @@ CONTENTS                                            *dual-contents*
     4. The keymaps ............................ |dual-keymaps|
     5. The configuration ...................... |dual-configuration|
     6. The files .............................. |dual-files|
-    7. The shell .............................. |dual-shell|
-    8. The health ............................. |dual-health|
+    7. The review ............................. |dual-review|
+    8. The mentions ........................... |dual-mentions|
+    9. The shell .............................. |dual-shell|
+   10. The health ............................. |dual-health|
 
 ==============================================================================
 1. INTRODUCTION                                     *dual-introduction*
@@ -58,6 +60,17 @@ The commands and the keymaps exist after |setup()|.
 
                                                             *:DualInsert*
 :DualInsert         Asks for code at the cursor.
+
+                                                          *:DualReview*
+:DualReview         Opens the review of what the agent changed, when there
+                    is something waiting.
+
+                                                            *:DualModel*
+:DualModel          Picks the model. The list is the server's: dual.nvim
+                    knows no models of its own.
+
+                                                         *:DualSessions*
+:DualSessions        Picks a session to go back to.
 
                                                             *:DualCancel*
 :DualCancel         Stops the turn that is running.
@@ -148,7 +161,40 @@ A file the agent changes is shown as a diff, and it is kept only when the
 user says so.
 
 ==============================================================================
-7. THE SHELL                                               *dual-shell*
+7. THE REVIEW                                              *dual-review*
+
+The agent edits whole files; you decide about parts of them. A change
+opens a review: a window with the diff, in the notation of a git diff.
+
+    ]c        the next hunk
+    [c        the previous hunk
+    a         accept the hunk under the cursor
+    r         refuse the hunk under the cursor
+    A         accept every hunk that is in question
+    R         refuse every hunk that is in question
+    d         the whole file, side by side
+    q         close the review; the change stays pending
+
+Accepting a hunk writes it into the buffer, as an undoable edit. Refusing
+one leaves the buffer alone. Either way the hunk is gone, and the
+difference is recomputed against the truth — which is your buffer.
+
+When you ask for a change to a selection, the hunks that overlap the
+selection are the ones in question, and the ones that do not are listed
+apart: the agent's overrun, shown and not applied.
+
+==============================================================================
+8. THE MENTIONS                                            *dual-mentions*
+
+`@` in the chat completes the files of the project. A mention is a path:
+the agent reads the file itself, so nothing is pasted into the prompt and
+nothing goes stale. The agent reads the live buffer, not the file on the
+disk.
+
+A search the agent runs fills the quickfix list. `:copen` walks it.
+
+==============================================================================
+9. THE SHELL                                               *dual-shell*
 
 The agent's shell runs on the disk, while its file tools work on the
 buffers. A shell that writes to the disk changes files the user never
@@ -157,7 +203,7 @@ accepted, so it is hidden from the model by default.
 `allow_shell = true` gives it back. The chat says so when it is on.
 
 ==============================================================================
-8. THE HEALTH                                             *dual-health*
+10. THE HEALTH                                            *dual-health*
 
 >vim
     :checkhealth dual

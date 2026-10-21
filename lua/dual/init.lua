@@ -21,6 +21,9 @@ M.state = {
   transport = nil,
   files = {},
   starting = false,
+  -- The scope of the turn that is running: the range the user pointed
+  -- at, if the request was a scoped one.
+  scope = nil,
 }
 
 -- The hooks: the surfaces that want to know when the session is there.
@@ -42,6 +45,11 @@ end
 function M.announce(session)
   M.state.session = session
   require("dual.buffers").listen(session.client)
+  require("dual.quickfix").listen(session.client)
+  session.client:on("run_end", function()
+    -- The scope was for that turn only.
+    M.state.scope = nil
+  end)
   for _, fn in ipairs(M.hooks.session) do
     pcall(fn, session)
   end
@@ -71,6 +79,36 @@ function M.setup_commands(cfg)
       require("dual.ops.ask").run()
     end, { desc = "Ask about the selection" })
   end
+  if commands.change ~= nil then
+    vim.api.nvim_create_user_command(commands.change, function()
+      require("dual.ops.change").run()
+    end, { desc = "Change the selection" })
+  end
+  if commands.insert ~= nil then
+    vim.api.nvim_create_user_command(commands.insert, function()
+      require("dual.ops.change").insert()
+    end, { desc = "Insert code at the cursor" })
+  end
+  if commands.review ~= nil then
+    vim.api.nvim_create_user_command(commands.review, function()
+      local paths = require("dual.review").paths()
+      if #paths == 0 then
+        M.notify("dual: there is nothing to review")
+        return
+      end
+      require("dual.ui.review").open(paths[1])
+    end, { desc = "Review what the agent changed" })
+  end
+  if commands.model ~= nil then
+    vim.api.nvim_create_user_command(commands.model, function()
+      require("dual.ops.model").run()
+    end, { desc = "Pick the model" })
+  end
+  if commands.sessions ~= nil then
+    vim.api.nvim_create_user_command(commands.sessions, function()
+      require("dual.ops.sessions").run()
+    end, { desc = "Pick a session" })
+  end
   if commands.health ~= nil then
     vim.api.nvim_create_user_command(commands.health, function()
       require("dual.health").report()
@@ -98,7 +136,7 @@ function M.setup_keymaps(cfg)
     chat = action("dual.ui.chat", "toggle"),
     ask = action("dual.ops.ask", "run"),
     change = action("dual.ops.change", "run"),
-    insert = action("dual.ops.insert", "run"),
+    insert = action("dual.ops.change", "insert"),
     cancel = function()
       M.cancel()
     end,
@@ -160,8 +198,10 @@ end
 
 --- Runs a turn.
 function M.send(text, on_ready)
+  -- A mention is a path: the agent reads it itself.
+  local expanded = require("dual.files").expand(text)
   M.start(function(session)
-    session:send(text)
+    session:send(expanded)
     if on_ready then
       on_ready(session)
     end

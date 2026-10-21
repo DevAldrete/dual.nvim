@@ -26,7 +26,7 @@ many models, and a Neovim that stays yours.
   answer lands below the selection, where the code is. The selection is
   never touched.
 - **The agent edits buffers, not files.** A change lands in an unsaved
-  buffer and never reaches the disk until you accept it.
+  buffer as a diff, and you accept or refuse it hunk by hunk.
 - **The agent can be steered.** While it works, type what it should do
   instead; the guidance reaches it at the next boundary and the turn
   carries on.
@@ -48,6 +48,9 @@ many models, and a Neovim that stays yours.
 | `:DualAsk` | asks about the selection |
 | `:DualChange` | asks for a change to the selection |
 | `:DualInsert` | asks for code at the cursor |
+| `:DualReview` | reviews what the agent changed |
+| `:DualModel` | picks the model |
+| `:DualSessions` | picks a session |
 | `:DualCancel` | stops the turn that is running |
 | `:DualSteer` | guides the turn that is running |
 | `:DualHealth` | says whether the agent is there |

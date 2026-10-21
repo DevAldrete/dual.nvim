@@ -1,16 +1,17 @@
 ---
 id: DUAL-7
 title: "The model picker and the sessions picker"
-status: todo
+status: done
 type: story
 epic: EPIC-01
 sprint: 2026-S02
 points: 5
 priority: 2
 labels: [ui]
-order: 40
+order: 70
 created: 2026-10-21
 updated: 2026-10-21
+assignee: agent-opencode
 ---
 
 ## Context
@@ -45,3 +46,10 @@ The protocol already answers both questions: `{"cmd":"models"}` and
 The plugin has no catalog of its own, and that is the point: a picker
 that offers a model the server cannot serve is a picker that lies. The
 list comes from the server, every time.
+
+## Delivery
+
+- Branch: `task/DUAL-7-pickers`
+- Commits: `8300eff`, `c73c710`, `eac2bd7`, `aaf0246`
+- Summary: Merged in 62c9ee9.
+- Checks: make test

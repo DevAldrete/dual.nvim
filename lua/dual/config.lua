@@ -69,6 +69,9 @@ M.defaults = {
     insert = "DualInsert",
     cancel = "DualCancel",
     steer = "DualSteer",
+    review = "DualReview",
+    model = "DualModel",
+    sessions = "DualSessions",
     health = "DualHealth",
   },
 

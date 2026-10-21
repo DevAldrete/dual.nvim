@@ -61,6 +61,30 @@ while true do
         write({ id = req.id, ok = true })
         write({ event = "run_start" })
         write({ event = "line", role = "user", style = "plain", text = req.text })
+        -- A turn that asks for a change changes a file: the one it was
+        -- pointed at, or the one it names.
+        local changed = req.text:match('file="([^"]+)"')
+          or req.text:match("^change%s+(%S+)")
+        if changed ~= nil then
+          write({
+            event = "file_changed",
+            path = changed,
+            text = "int main(void) {\n  return 1;\n}\n",
+            is_new = false,
+          })
+        end
+        -- A turn that searches fills the quickfix list.
+        if req.text:match("^search") then
+          write({ event = "tool_call", name = "grep", input = '{"pattern":"x"}' })
+          write({
+            event = "tool_result",
+            name = "grep",
+            input = '{"pattern":"x"}',
+            output = "lua/dual/init.lua:12:  local x = 1;\n"
+              .. "lua/dual/session.lua:4:  local y = 2;\n2 match(es)\n",
+            is_error = false,
+          })
+        end
         write({ event = "text", text = answer })
         write({ event = "message", text = answer })
         write({ event = "run_end", ok = true })
@@ -81,8 +105,34 @@ while true do
           ok = true,
           models = {
             { provider = "mock", model = "m", context_window = 8000, active = true },
+            { provider = "mock", model = "m2", context_window = 4000, active = false },
           },
         })
+      elseif cmd == "model" then
+        write({ id = req.id, ok = true, model = req.model or "mock/m" })
+      elseif cmd == "sessions" then
+        write({
+          id = req.id,
+          ok = true,
+          sessions = {
+            {
+              id = "mock-session-1",
+              title = "the first one",
+              model = "mock/m",
+              updated_at = 1792556239,
+              messages = 4,
+            },
+            {
+              id = "mock-session-2",
+              title = "the second one",
+              model = "mock/m",
+              updated_at = 1792556000,
+              messages = 2,
+            },
+          },
+        })
+      elseif cmd == "resume" then
+        write({ id = req.id, ok = true })
       elseif cmd == "sync" then
         write({ id = req.id, ok = true })
       else
