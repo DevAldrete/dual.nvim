@@ -28,6 +28,19 @@ function M.path(buf)
   return rel
 end
 
+--- The absolute path of a path that is relative to the root.
+function M.absolute(path)
+  if path == nil or path == "" then
+    return nil
+  end
+  if path:sub(1, 1) == "/" then
+    return path
+  end
+  local cfg = require("dual").state.cfg
+  local cwd = cfg and require("dual.server").cwd(cfg) or vim.fn.getcwd()
+  return cwd .. "/" .. path
+end
+
 --- The scope of the visual selection, or of the last one.
 -- @return table|nil: the scope, or nil and a reason
 function M.capture()
