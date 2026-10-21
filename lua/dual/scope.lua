@@ -152,18 +152,56 @@ function M.lines(scope)
   return range.start_row + 1, range.end_row + 1
 end
 
+--- The scope of the cursor: an empty range, where the code should go.
+function M.capture_cursor()
+  local buf = vim.api.nvim_get_current_buf()
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  local row = cursor[1] - 1
+  local col = cursor[2]
+  local start_mark = vim.api.nvim_buf_set_extmark(buf, ns, row, col, {})
+  local end_mark = vim.api.nvim_buf_set_extmark(buf, ns, row, col, {})
+  return {
+    buf = buf,
+    path = M.path(buf),
+    text = "",
+    start_row = row,
+    end_row = row,
+    start_col = col,
+    end_col = col,
+    linewise = false,
+    empty = true,
+    start_mark = start_mark,
+    end_mark = end_mark,
+    saved = vim.bo[buf].modified,
+  }
+end
+
 --- The request the agent receives: the scope, and the question.
-function M.prompt(scope, question)
+--
+-- @param scope table: the scope
+-- @param question string: what the user asked
+-- @param kind string: "ask", "change" or "insert"
+function M.prompt(scope, question, kind)
   local from, to = M.lines(scope)
   local header = ("<dual_context file=%q lines=\"%d-%d\" saved=%q>"):format(
     scope.path or "?", from, to, scope.saved and "true" or "false")
-  return table.concat({
+  local ask = {
+    ask = "Answer the question about this code.",
+    change = "Change this code, and only this code.",
+    insert = "Write the code that goes here.",
+  }
+  local lines = {
     header,
-    scope.text,
-    "</dual_context>",
-    "",
-    question or "",
-  }, "\n")
+  }
+  if not scope.empty then
+    lines[#lines + 1] = scope.text
+  end
+  lines[#lines + 1] = "</dual_context>"
+  lines[#lines + 1] = ""
+  lines[#lines + 1] = question or ""
+  lines[#lines + 1] = ""
+  lines[#lines + 1] = ask[kind or "ask"] or ask.ask
+  return table.concat(lines, "\n")
 end
 
 --- Forgets a scope: the marks go, and the annotation with them.

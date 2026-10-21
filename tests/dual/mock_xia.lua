@@ -61,8 +61,10 @@ while true do
         write({ id = req.id, ok = true })
         write({ event = "run_start" })
         write({ event = "line", role = "user", style = "plain", text = req.text })
-        -- A turn that asks for a change changes a file.
-        local changed = req.text:match("^change%s+(%S+)")
+        -- A turn that asks for a change changes a file: the one it was
+        -- pointed at, or the one it names.
+        local changed = req.text:match('file="([^"]+)"')
+          or req.text:match("^change%s+(%S+)")
         if changed ~= nil then
           write({
             event = "file_changed",
