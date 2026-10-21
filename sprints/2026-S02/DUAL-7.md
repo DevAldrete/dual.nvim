@@ -1,7 +1,7 @@
 ---
 id: DUAL-7
 title: "The model picker and the sessions picker"
-status: doing
+status: review
 type: story
 epic: EPIC-01
 sprint: 2026-S02
