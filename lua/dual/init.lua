@@ -45,6 +45,10 @@ end
 function M.announce(session)
   M.state.session = session
   require("dual.buffers").listen(session.client)
+  session.client:on("run_end", function()
+    -- The scope was for that turn only.
+    M.state.scope = nil
+  end)
   for _, fn in ipairs(M.hooks.session) do
     pcall(fn, session)
   end
@@ -73,6 +77,16 @@ function M.setup_commands(cfg)
     vim.api.nvim_create_user_command(commands.ask, function()
       require("dual.ops.ask").run()
     end, { desc = "Ask about the selection" })
+  end
+  if commands.change ~= nil then
+    vim.api.nvim_create_user_command(commands.change, function()
+      require("dual.ops.change").run()
+    end, { desc = "Change the selection" })
+  end
+  if commands.insert ~= nil then
+    vim.api.nvim_create_user_command(commands.insert, function()
+      require("dual.ops.change").insert()
+    end, { desc = "Insert code at the cursor" })
   end
   if commands.review ~= nil then
     vim.api.nvim_create_user_command(commands.review, function()
@@ -111,7 +125,7 @@ function M.setup_keymaps(cfg)
     chat = action("dual.ui.chat", "toggle"),
     ask = action("dual.ops.ask", "run"),
     change = action("dual.ops.change", "run"),
-    insert = action("dual.ops.insert", "run"),
+    insert = action("dual.ops.change", "insert"),
     cancel = function()
       M.cancel()
     end,
