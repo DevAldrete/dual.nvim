@@ -9,7 +9,8 @@ M.window = nil
 M.buffer = nil
 
 --- Opens the prompt near a position.
--- @param opts table: prompt (the text to show), row, col, on_submit, on_cancel
+-- @param opts table: prompt (the text to show), row, col, on_submit, on_cancel,
+--                    secret (hide what is typed)
 function M.open(opts)
   M.close()
 
@@ -20,6 +21,7 @@ function M.open(opts)
   vim.api.nvim_set_option_value("swapfile", false, { buf = buf })
   vim.api.nvim_set_option_value("filetype", "dual-prompt", { buf = buf })
   M.buffer = buf
+  M.secret = opts.secret == true
 
   local width = opts.width or math.min(60, math.max(30, vim.o.columns - 10))
   local height = opts.height or 3
@@ -39,7 +41,17 @@ function M.open(opts)
   })
   M.window = win
 
-  if opts.prompt ~= nil and opts.prompt ~= "" then
+  if M.secret then
+    -- A secret is not something to read over the user's shoulder: the
+    -- label is on its own line, and what is typed is concealed.
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, { opts.prompt or "", "" })
+    -- The options are window-local: the window is the prompt's, and it
+    -- goes when the prompt does.
+    vim.api.nvim_set_option_value("conceallevel", 2, { win = win })
+    vim.api.nvim_set_option_value("concealcursor", "nvic", { win = win })
+    vim.api.nvim_buf_add_highlight(buf, -1, "Conceal", 1, 0, -1)
+    vim.api.nvim_win_set_cursor(win, { 2, 0 })
+  elseif opts.prompt ~= nil and opts.prompt ~= "" then
     vim.api.nvim_buf_set_lines(buf, 0, -1, false, { opts.prompt })
   end
 
@@ -75,6 +87,10 @@ function M.text()
     return ""
   end
   local lines = vim.api.nvim_buf_get_lines(M.buffer, 0, -1, false)
+  if M.secret then
+    -- Only the line the user typed on: the label is not part of it.
+    return (lines[#lines] or ""):gsub("^%s+", ""):gsub("%s+$", "")
+  end
   return (table.concat(lines, "\n"):gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
@@ -85,15 +101,16 @@ function M.close()
   end
   M.window = nil
   M.buffer = nil
+  M.secret = false
 end
 
 --- Asks for a line of text.
--- @param opts table: prompt, title, row, col
+-- @param opts table: prompt, title, row, col, secret, allow_empty
 -- @param on_submit function: called with the text
 function M.capture(opts, on_submit)
   M.open(vim.tbl_extend("force", opts or {}, {
     on_submit = function(text)
-      if text ~= nil and text ~= "" then
+      if text ~= nil and (text ~= "" or opts.allow_empty == true) then
         on_submit(text)
       end
     end,

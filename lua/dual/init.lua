@@ -109,6 +109,11 @@ function M.setup_commands(cfg)
       require("dual.ops.sessions").run()
     end, { desc = "Pick a session" })
   end
+  if commands.auth ~= nil then
+    vim.api.nvim_create_user_command(commands.auth, function()
+      require("dual.ops.auth").run()
+    end, { desc = "Set the key of a provider" })
+  end
   if commands.health ~= nil then
     vim.api.nvim_create_user_command(commands.health, function()
       require("dual.health").report()

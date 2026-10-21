@@ -51,6 +51,7 @@ many models, and a Neovim that stays yours.
 | `:DualReview` | reviews what the agent changed |
 | `:DualModel` | picks the model |
 | `:DualSessions` | picks a session |
+| `:DualAuth` | sets the key of a provider |
 | `:DualCancel` | stops the turn that is running |
 | `:DualSteer` | guides the turn that is running |
 | `:DualHealth` | says whether the agent is there |

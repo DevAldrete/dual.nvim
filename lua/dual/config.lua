@@ -76,6 +76,7 @@ M.defaults = {
     review = "DualReview",
     model = "DualModel",
     sessions = "DualSessions",
+    auth = "DualAuth",
     health = "DualHealth",
   },
 

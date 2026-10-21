@@ -25,6 +25,9 @@ local capabilities = {
 -- What the shell is fenced with: the mock fences it in.
 local sandbox = "seatbelt"
 
+-- The keys the client gave.
+local keys = {}
+
 -- The arguments: the answer the mock gives, and the capabilities it
 -- claims.
 for i, a in ipairs(_G.arg or {}) do
@@ -115,6 +118,22 @@ while true do
         })
       elseif cmd == "model" then
         write({ id = req.id, ok = true, model = req.model or "mock/m" })
+      elseif cmd == "auth" then
+        if req.provider ~= nil then
+          if req.remove == true then
+            keys[req.provider] = nil
+          elseif req.key ~= nil then
+            keys[req.provider] = req.key
+          end
+        end
+        write({
+          id = req.id,
+          ok = true,
+          providers = {
+            { provider = "mock", name = "Mock", has_key = keys["mock"] ~= nil },
+            { provider = "other", name = "Other", has_key = keys["other"] ~= nil },
+          },
+        })
       elseif cmd == "sessions" then
         write({
           id = req.id,
