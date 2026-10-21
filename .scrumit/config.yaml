@@ -1,0 +1,14 @@
+version: 1
+project: dual
+columns:
+  - { id: backlog, name: Backlog, wip: null }
+  - { id: todo, name: To do, wip: null }
+  - { id: doing, name: Doing, wip: 3 }
+  - { id: review, name: Review, wip: 4 }
+  - { id: done, name: Done, wip: null, terminal: true }
+backlog: { dir: backlog }
+sprints: { dir: sprints, length_days: 14 }
+epics: { dir: epics }
+archive: { dir: done }
+ceremony: Planning Monday, review and retro every second Friday
+vocabulary: { points: true, assignees: true, priorities: true }
