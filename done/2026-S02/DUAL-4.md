@@ -1,14 +1,14 @@
 ---
 id: DUAL-4
 title: "The diff engine and the review state"
-status: review
+status: done
 type: story
 epic: EPIC-01
 sprint: 2026-S02
 points: 8
 priority: 1
 labels: [core]
-order: 10
+order: 40
 created: 2026-10-21
 updated: 2026-10-21
 assignee: agent-opencode
@@ -66,3 +66,10 @@ The state of a file is small enough to be a table:
 Accepting moves `base` toward `target`; refusing moves `target` back
 toward `base`. Either way the hunk disappears, and the difference is
 recomputed against the truth.
+
+## Delivery
+
+- Branch: `task/DUAL-4-diff-engine`
+- Commits: `2ba3d5c`, `3ddf5a4`, `e812ea2`, `0fde09c`
+- Summary: Merged in 3f6c351.
+- Checks: make test
