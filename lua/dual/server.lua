@@ -22,19 +22,48 @@ end
 --- The xia configuration the plugin wants: no shell.
 --
 -- The agent's shell runs on the disk, while the file tools work on the
--- buffers. A shell that writes to the disk changes files the user never
--- accepted, so it stays away from the model unless the user says so.
+-- buffers. The server fences the shell in — the project is read-only
+-- for it — so the shell may be offered, as long as the platform can
+-- fence it in at all.
+--
+-- The plugin's own file runs the user's own configuration first: the
+-- plugin adds to what the user configured, it does not replace it.
+--
+-- @param cfg table: the configuration
+-- @return string|nil: the script, or nil when there is nothing to say
 function M.init_script(cfg)
-  if cfg.allow_shell then
+  local allow = cfg.allow_shell
+  if allow == true then
+    -- The user says the shell is fine: there is nothing to write, and
+    -- the user's own configuration is left alone.
     return nil
   end
-  return table.concat({
-    "-- Written by dual.nvim.",
-    "-- The shell sees the disk; the file tools see the buffers.",
-    '-- A shell that writes to the disk changes files nobody accepted.',
-    'xia.hide_tool("bash")',
-    "",
-  }, "\n")
+
+  local lines = {}
+  local user_init = vim.env.XIA_INIT
+  if user_init ~= nil and user_init ~= "" then
+    lines[#lines + 1] = "-- The user's own configuration runs first."
+    lines[#lines + 1] = ("local f = io.open(%q, 'r')"):format(user_init)
+    lines[#lines + 1] = "if f then"
+    lines[#lines + 1] = "  f:close()"
+    lines[#lines + 1] = ("  dofile(%q)"):format(user_init)
+    lines[#lines + 1] = "end"
+    lines[#lines + 1] = ""
+  end
+
+  lines[#lines + 1] = "-- Written by dual.nvim."
+  lines[#lines + 1] = "-- The shell writes to the disk; the file tools work on the buffers."
+  if allow == false then
+    lines[#lines + 1] = "-- The user asked for no shell."
+    lines[#lines + 1] = 'xia.hide_tool("bash")'
+  else
+    lines[#lines + 1] = "-- The shell is only offered when the platform can fence it in."
+    lines[#lines + 1] = 'if xia.sandbox() == "none" then'
+    lines[#lines + 1] = '  xia.hide_tool("bash")'
+    lines[#lines + 1] = "end"
+  end
+  lines[#lines + 1] = ""
+  return table.concat(lines, "\n")
 end
 
 --- The environment of the server: the user's, plus the plugin's own

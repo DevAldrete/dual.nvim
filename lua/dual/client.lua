@@ -21,6 +21,8 @@ function M.new(opts)
     model = "",
     session = "",
     capabilities = {},
+    -- What the shell is fenced with: "seatbelt", "landlock", or "none".
+    sandbox = "none",
   }, Client)
 end
 
@@ -80,6 +82,7 @@ function Client:on_hello(msg)
   self.model = msg.model or ""
   self.session = msg.session or ""
   self.capabilities = msg.capabilities or {}
+  self.sandbox = msg.sandbox or "none"
   if self.on_ready then
     self.on_ready(self)
   end
