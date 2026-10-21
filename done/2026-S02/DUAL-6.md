@@ -1,14 +1,14 @@
 ---
 id: DUAL-6
 title: "The scoped requests: change and insert"
-status: review
+status: done
 type: story
 epic: EPIC-01
 sprint: 2026-S02
 points: 8
 priority: 2
 labels: [ui, core]
-order: 10
+order: 60
 created: 2026-10-21
 updated: 2026-10-21
 assignee: agent-opencode
@@ -47,3 +47,10 @@ The scope is held by extmarks, so it follows the edits the user makes
 while the agent works. The range of the *review* is the range of those
 marks, not the range the request was made with: the user moved the code
 down a line, and the change belongs where the code is now.
+
+## Delivery
+
+- Branch: `task/DUAL-6-scoped`
+- Commits: `bcab743`, `508e546`, `25b267b`, `66e0acf`
+- Summary: Merged in b65b34c.
+- Checks: make test
