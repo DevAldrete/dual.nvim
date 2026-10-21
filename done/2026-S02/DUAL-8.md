@@ -1,14 +1,14 @@
 ---
 id: DUAL-8
 title: "The mentions and the quickfix"
-status: review
+status: done
 type: story
 epic: EPIC-01
 sprint: 2026-S02
 points: 8
 priority: 3
 labels: [ui]
-order: 10
+order: 80
 created: 2026-10-21
 updated: 2026-10-21
 assignee: agent-opencode
@@ -49,3 +49,10 @@ agent's own tools do, and the model's summary stays a summary.
 
 The grep tool answers `path:line: text`; the glob tool answers one path
 per line. Both are the plugin's to read.
+
+## Delivery
+
+- Branch: `task/DUAL-8-mentions`
+- Commits: `26d835b`, `7ff1889`, `4b3266b`, `70a911e`
+- Summary: Merged in 36087cc.
+- Checks: make test
