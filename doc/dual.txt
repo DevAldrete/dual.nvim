@@ -12,7 +12,8 @@ CONTENTS                                            *dual-contents*
     7. The review ............................. |dual-review|
     8. The mentions ........................... |dual-mentions|
     9. The shell .............................. |dual-shell|
-   10. The health ............................. |dual-health|
+   10. The keys ............................... |dual-keys|
+   11. The health ............................. |dual-health|
 
 ==============================================================================
 1. INTRODUCTION                                     *dual-introduction*
@@ -71,6 +72,11 @@ The commands and the keymaps exist after |setup()|.
 
                                                          *:DualSessions*
 :DualSessions        Picks a session to go back to.
+
+                                                            *:DualAuth*
+:DualAuth            Sets the key of a provider. The providers the server
+                    knows are offered; the key is asked for in a prompt
+                    that hides it, and the server remembers it.
 
                                                             *:DualCancel*
 :DualCancel         Stops the turn that is running.
@@ -210,7 +216,23 @@ platform can fence it in, and kept away when it cannot.
     allow_shell = false     the shell stays away from the model
 
 ==============================================================================
-10. THE HEALTH                                            *dual-health*
+10. THE KEYS                                              *dual-keys*
+
+The provider is a choice, and the key belongs to that choice. `:DualAuth`
+asks the server which providers there are — and which of them have a key —
+and the key is asked for in a prompt that hides it: a key is not
+something to read over your shoulder.
+
+The server remembers it in its keyring: `$XDG_CONFIG_HOME/xia/auth.json`,
+or `~/.config/xia/auth.json`, a plain JSON file with `0600` in a
+directory with `0700`. That is where the user can look at it, and delete
+it — with `xia auth remove <provider>`, or by leaving the prompt empty.
+
+The key never goes near the transcript, the command line or the
+environment.
+
+==============================================================================
+11. THE HEALTH                                            *dual-health*
 
 >vim
     :checkhealth dual

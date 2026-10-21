@@ -1,7 +1,7 @@
 ---
 id: DUAL-10
 title: "The keys are set from the editor"
-status: doing
+status: review
 type: story
 epic: EPIC-01
 sprint: 2026-S03
