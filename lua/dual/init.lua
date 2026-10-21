@@ -23,6 +23,30 @@ M.state = {
   starting = false,
 }
 
+-- The hooks: the surfaces that want to know when the session is there.
+M.hooks = {
+  session = {},
+}
+
+--- Runs a function when the session is ready. If it already is, the
+--- function runs at once.
+function M.on_session(fn)
+  if M.state.session ~= nil then
+    fn(M.state.session)
+    return
+  end
+  table.insert(M.hooks.session, fn)
+end
+
+--- Tells the surfaces the session is there.
+function M.announce(session)
+  M.state.session = session
+  require("dual.buffers").listen(session.client)
+  for _, fn in ipairs(M.hooks.session) do
+    pcall(fn, session)
+  end
+end
+
 --- Sets the plugin up.
 -- @param opts table: the configuration; see dual.config
 function M.setup(opts)
@@ -37,6 +61,16 @@ end
 --- The commands of the plugin.
 function M.setup_commands(cfg)
   local commands = cfg.commands or {}
+  if commands.chat ~= nil then
+    vim.api.nvim_create_user_command(commands.chat, function()
+      require("dual.ui.chat").toggle()
+    end, { desc = "The chat" })
+  end
+  if commands.ask ~= nil then
+    vim.api.nvim_create_user_command(commands.ask, function()
+      require("dual.ops.ask").run()
+    end, { desc = "Ask about the selection" })
+  end
   if commands.health ~= nil then
     vim.api.nvim_create_user_command(commands.health, function()
       require("dual.health").report()
@@ -47,31 +81,40 @@ end
 --- The keymaps of the plugin. An empty key means no keymap.
 function M.setup_keymaps(cfg)
   local keys = cfg.keys or {}
+  -- A surface that is not built yet says so, rather than throwing.
+  local function action(module, name)
+    return function()
+      local ok, m = pcall(require, module)
+      if not ok or type(m) ~= "table" or type(m[name]) ~= "function" then
+        M.notify(("dual: %s is not here yet"):format(module),
+          vim.log.levels.WARN)
+        return
+      end
+      m[name]()
+    end
+  end
+
   local actions = {
-    chat = function()
-      require("dual.ui.chat").toggle()
-    end,
-    ask = function()
-      require("dual.ops.ask").run()
-    end,
-    change = function()
-      require("dual.ops.change").run()
-    end,
-    insert = function()
-      require("dual.ops.insert").run()
-    end,
+    chat = action("dual.ui.chat", "toggle"),
+    ask = action("dual.ops.ask", "run"),
+    change = action("dual.ops.change", "run"),
+    insert = action("dual.ops.insert", "run"),
     cancel = function()
-      require("dual").cancel()
+      M.cancel()
     end,
-    steer = function()
-      require("dual.ops.steer").run()
-    end,
+    steer = action("dual.ops.steer", "run"),
   }
   for name, fn in pairs(actions) do
     local key = keys[name]
     if key ~= nil and key ~= "" then
       vim.keymap.set("n", key, fn, { desc = "dual: " .. name })
     end
+  end
+
+  -- The ask also works on a selection that is being made: the scope is
+  -- the selection, not the last one.
+  if keys.ask ~= nil and keys.ask ~= "" then
+    vim.keymap.set("v", keys.ask, actions.ask, { desc = "dual: ask" })
   end
 end
 
@@ -104,9 +147,9 @@ function M.start(on_ready)
 
   client:start(function(c)
     st.starting = false
-    st.session = M.session.new(c)
+    M.announce(M.session.new(c))
     if on_ready then
-      on_ready(st.session)
+      on_ready(M.state.session)
     end
   end, function(err)
     st.starting = false

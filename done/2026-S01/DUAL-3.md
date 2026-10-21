@@ -1,7 +1,7 @@
 ---
 id: DUAL-3
 title: "The quick ask"
-status: todo
+status: done
 type: story
 epic: EPIC-01
 sprint: 2026-S01
@@ -11,6 +11,7 @@ labels: [ui]
 order: 30
 created: 2026-10-21
 updated: 2026-10-21
+assignee: agent-opencode
 ---
 
 ## Context
@@ -56,3 +57,10 @@ The pending rule is the one that keeps the milestone honest: the plugin
 pushes what it owns, so a change the agent made must not be lost by the
 next push. The review that turns pending into accepted is the next
 milestone.
+
+## Delivery
+
+- Branch: `task/DUAL-3-quick-ask`
+- Commits: `7051a5d`, `a6cf229`, `8bd5231`, `a393b9f`
+- Summary: Merged in e91d3b9.
+- Checks: make test

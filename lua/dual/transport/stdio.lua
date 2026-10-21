@@ -48,7 +48,11 @@ function Transport:start()
       env = self.env,
       stdout = function(_, data)
         if data then
-          self:feed(data)
+          -- The line arrives in a fast event context, where the editor
+          -- may not be touched. The main loop does that.
+          vim.schedule(function()
+            self:feed(data)
+          end)
         end
       end,
       stderr = function(_, data)

@@ -1,7 +1,7 @@
 ---
 id: DUAL-1
 title: "The repo and the wire"
-status: todo
+status: done
 type: story
 epic: EPIC-01
 sprint: 2026-S01
@@ -11,6 +11,7 @@ labels: [core]
 order: 10
 created: 2026-10-21
 updated: 2026-10-21
+assignee: agent-opencode
 ---
 
 ## Context
@@ -52,3 +53,10 @@ can replace the process later without touching anything above it.
 
 The reply and the events are independent: a reply says the request was
 understood, the events say what happened. The client keeps them apart.
+
+## Delivery
+
+- Branch: `task/DUAL-1-the-wire`
+- Commits: `8318e7c`, `74d3867`, `e1363f9`
+- Summary: Merged in 75385d2.
+- Checks: make test
