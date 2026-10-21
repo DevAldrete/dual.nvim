@@ -1,7 +1,7 @@
 ---
 id: DUAL-6
 title: "The scoped requests: change and insert"
-status: doing
+status: review
 type: story
 epic: EPIC-01
 sprint: 2026-S02
