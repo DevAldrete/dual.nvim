@@ -1,16 +1,17 @@
 ---
 id: DUAL-10
 title: "The keys are set from the editor"
-status: todo
+status: doing
 type: story
 epic: EPIC-01
 sprint: 2026-S03
 points: 8
 priority: 2
 labels: [ui, core]
-order: 20
+order: 10
 created: 2026-10-21
 updated: 2026-10-21
+assignee: agent-opencode
 ---
 
 ## Context
